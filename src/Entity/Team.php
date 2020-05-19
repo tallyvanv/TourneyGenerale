@@ -22,16 +22,28 @@ class Team
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $TeamName;
+    private $teamName;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="Team")
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="team")
      */
-    private $users;
+    private $members;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Match::class, mappedBy="teams")
+     */
+    private $matches;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Match::class, mappedBy="winner")
+     */
+    private $matchesWon;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+        $this->members = new ArrayCollection();
+        $this->matches = new ArrayCollection();
+        $this->matchesWon = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -41,12 +53,12 @@ class Team
 
     public function getTeamName(): ?string
     {
-        return $this->TeamName;
+        return $this->teamName;
     }
 
-    public function setTeamName(string $TeamName): self
+    public function setTeamName(string $teamName): self
     {
-        $this->TeamName = $TeamName;
+        $this->teamName = $teamName;
 
         return $this;
     }
@@ -54,29 +66,85 @@ class Team
     /**
      * @return Collection|User[]
      */
-    public function getUsers(): Collection
+    public function getMembers(): Collection
     {
-        return $this->users;
+        return $this->members;
     }
 
-    public function addUser(User $user): self
+    public function addMember(User $member): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->setTeam($this);
+        if (!$this->members->contains($member)) {
+            $this->members[] = $member;
+            $member->setTeam($this);
         }
 
         return $this;
     }
 
-    public function removeUser(User $user): self
+    public function removeMember(User $member): self
     {
-        if ($this->users->contains($user)) {
-            $this->users->removeElement($user);
+        if ($this->members->contains($member)) {
+            $this->members->removeElement($member);
             // set the owning side to null (unless already changed)
-            if ($user->getTeam() === $this) {
-                $user->setTeam(null);
+            if ($member->getTeam() === $this) {
+                $member->setTeam(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Match[]
+     */
+    public function getMatches(): Collection
+    {
+        return $this->matches;
+    }
+
+    public function addMatch(Match $match): self
+    {
+        if (!$this->matches->contains($match)) {
+            $this->matches[] = $match;
+            $match->addTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatch(Match $match): self
+    {
+        if ($this->matches->contains($match)) {
+            $this->matches->removeElement($match);
+            $match->removeTeam($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Match[]
+     */
+    public function getMatchesWon(): Collection
+    {
+        return $this->matchesWon;
+    }
+
+    public function addMatchesWon(Match $matchesWon): self
+    {
+        if (!$this->matchesWon->contains($matchesWon)) {
+            $this->matchesWon[] = $matchesWon;
+            $matchesWon->addWinner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatchesWon(Match $matchesWon): self
+    {
+        if ($this->matchesWon->contains($matchesWon)) {
+            $this->matchesWon->removeElement($matchesWon);
+            $matchesWon->removeWinner($this);
         }
 
         return $this;

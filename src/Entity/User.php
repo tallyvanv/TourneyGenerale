@@ -40,9 +40,9 @@ class User implements UserInterface
     private $Email;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Team::class, inversedBy="users")
+     * @ORM\ManyToOne(targetEntity=Team::class, inversedBy="members")
      */
-    private $Team;
+    private $team;
 
     public function getId(): ?int
     {
@@ -131,13 +131,17 @@ class User implements UserInterface
 
     public function getTeam(): ?Team
     {
-        return $this->Team;
+        return $this->team;
     }
 
-    public function setTeam(?Team $Team): self
+    public function setTeam(?Team $team): self
     {
-        $this->Team = $Team;
+        $this->team = $team;
 
         return $this;
     }
+
+
+
+
 }
