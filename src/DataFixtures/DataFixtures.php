@@ -19,14 +19,14 @@ class DataFixtures extends Fixture
         $match = new Match();
         $user->setUsername("matthijs");
         $user->setEmail("matthijs@gmail.com");
-        $user->setPassword("matthijs");
+        $user->setPassword('$argon2id$v=19$m=65536,t=4,p=1$KRo3zJhvdVincbY6PSktkA$WC1UQdcanV2UKHtHejXsHiWMPmILLhqg0+8krlL17zU');
         $user->setRoles(["ROLE_ADMIN"]);
         $user->setTeam($team);
 
 
         $user2->setUsername("taloes");
         $user2->setEmail("taloes@gmail.com");
-        $user2->setPassword("taloes");
+        $user2->setPassword('$argon2id$v=19$m=65536,t=4,p=1$fs9ZJLnTVdENKwKrN/pOmA$TBQv1Em2rbncCYOcux6M+hLQWNP3AhjwqBB29w+R1Ho');
         $user2->setRoles(["ROLE_USER"]);
         $user2->setTeam($team2);
 
