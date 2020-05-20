@@ -35,15 +35,22 @@ class Team
     private $matches;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Match::class, mappedBy="winner")
+     * @ORM\OneToMany(targetEntity=Match::class, mappedBy="winner")
      */
     private $matchesWon;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Match::class, mappedBy="loser")
+     */
+    private $matchesLost;
+
 
     public function __construct()
     {
         $this->members = new ArrayCollection();
         $this->matches = new ArrayCollection();
         $this->matchesWon = new ArrayCollection();
+        $this->matchesLost = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -134,7 +141,7 @@ class Team
     {
         if (!$this->matchesWon->contains($matchesWon)) {
             $this->matchesWon[] = $matchesWon;
-            $matchesWon->addWinner($this);
+            $matchesWon->setWinner($this);
         }
 
         return $this;
@@ -144,9 +151,44 @@ class Team
     {
         if ($this->matchesWon->contains($matchesWon)) {
             $this->matchesWon->removeElement($matchesWon);
-            $matchesWon->removeWinner($this);
+            // set the owning side to null (unless already changed)
+            if ($matchesWon->getWinner() === $this) {
+                $matchesWon->setWinner(null);
+            }
         }
 
         return $this;
     }
+
+    /**
+     * @return Collection|Match[]
+     */
+    public function getMatchesLost(): Collection
+    {
+        return $this->matchesLost;
+    }
+
+    public function addMatchesLost(Match $matchesLost): self
+    {
+        if (!$this->matchesLost->contains($matchesLost)) {
+            $this->matchesLost[] = $matchesLost;
+            $matchesLost->setLoser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatchesLost(Match $matchesLost): self
+    {
+        if ($this->matchesLost->contains($matchesLost)) {
+            $this->matchesLost->removeElement($matchesLost);
+            // set the owning side to null (unless already changed)
+            if ($matchesLost->getLoser() === $this) {
+                $matchesLost->setLoser(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

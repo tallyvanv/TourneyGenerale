@@ -26,16 +26,19 @@ class Match
     private $teams;
 
     /**
-     * Many Users have Many Groups.
-     * @ORM\ManyToMany(targetEntity="Team")
-     * @ORM\JoinTable(name="match_winner",
-     *      joinColumns={@ORM\JoinColumn(name="match_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="team_id", referencedColumnName="id")}
-     *      )
+     * @ORM\ManyToOne(targetEntity=Team::class, inversedBy="matchesWon")
      */
-
-    
     private $winner;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Team::class, inversedBy="matchesLost")
+     */
+    private $loser;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $tie;
 
 
     public function __construct()
@@ -73,4 +76,41 @@ class Match
 
         return $this;
     }
+
+    public function getWinner(): ?Team
+    {
+        return $this->winner;
+    }
+
+    public function setWinner(?Team $winner): self
+    {
+        $this->winner = $winner;
+
+        return $this;
+    }
+
+    public function getLoser(): ?Team
+    {
+        return $this->loser;
+    }
+
+    public function setLoser(?Team $loser): self
+    {
+        $this->loser = $loser;
+
+        return $this;
+    }
+
+    public function getTie(): ?bool
+    {
+        return $this->tie;
+    }
+
+    public function setTie(?bool $tie): self
+    {
+        $this->tie = $tie;
+
+        return $this;
+    }
+
 }
