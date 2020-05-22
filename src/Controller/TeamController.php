@@ -16,12 +16,10 @@ class TeamController extends AbstractController
     /**
      * @Route("/team", name="team")
      * @param Request $request
-     * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(/*User $user*/, Request $request)
+    public function index(Request $request)
     {
-        //var_dump($user);
         $form = $this->createForm(CreateTeamForm::class);
         $form->handleRequest($request);
 
@@ -29,11 +27,11 @@ class TeamController extends AbstractController
             $team = new Team();
             $team->setTeamName($form->get('teamName')->getData());
             $entityManager = $this->getDoctrine()->getManager();
-            //$user->setTeam($team);
+            $user = $this->getUser();
+            $user->setTeam($team);
             $entityManager->persist($team);
             $entityManager->persist($user);
             $entityManager->flush();
-
             return $this->redirectToRoute("team_homepage");
         }
 
